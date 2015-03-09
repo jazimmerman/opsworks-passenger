@@ -83,15 +83,15 @@ platforms:
     driver_plugin: ec2
     driver_config:
       flavor_id: c3.8xlarge
-  - name: c4-4xl
-    driver_plugin: ec2
-    driver_config:
-      ebs_optimized: true
-      flavor_id: c4.4xlarge
-  - name: c3-4xl
-    driver_plugin: ec2
-    driver_config:
-      flavor_id: c3.4xlarge
+#  - name: c4-4xl
+#    driver_plugin: ec2
+#    driver_config:
+#      ebs_optimized: true
+#      flavor_id: c4.4xlarge
+#  - name: c3-4xl
+#    driver_plugin: ec2
+#    driver_config:
+#      flavor_id: c3.4xlarge
 
 suites:
   - name: default
