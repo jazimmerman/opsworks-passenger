@@ -11,6 +11,18 @@ driver:
   aws_secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
   aws_ssh_key_id: <%= ENV['AWS_KEYPAIR_NAME'] %>
   require_chef_omnibus: "11.4.4"
+  availability_zone: us-east-1c
+  associate_public_ip: true
+  ssh_key: <%= ENV['EC2_SSH_KEY_PATH'] %>
+  username: ec2-user
+  ebs_delete_on_termination: true
+  image_id: ami-146e2a7c
+  security_group_ids: ['sg-d3ed64b7']
+  subnet_id: subnet-f0910b87
+  interface: dns
+  tags:
+    Name: <%= "#{ENV['CI'] ? 'travis-ci' : ENV['USER']}-opsworks-passenger-kitchen" %>
+    Env: public
 
 provisioner:
   name: chef_solo
@@ -62,20 +74,24 @@ provisioner:
         document_root: "public"
 
 platforms:
-  - name: amazon
+  - name: c4-8xl
     driver_plugin: ec2
     driver_config:
-      ssh_key: <%= ENV['EC2_SSH_KEY_PATH'] %>
-      username: ec2-user
-      flavor_id: c3.large
-      image_id: ami-0268d56a
-      region: us-east-1
-      availability_zone: us-east-1b
-      security_group_ids: ['ci-testing']
-      interface: public
-      tags:
-        Name: <%= "#{ENV['CI'] ? 'travis-ci' : ENV['USER']}-opsworks-passenger-kitchen" %>
-        Env: public
+      ebs_optimized: true
+      flavor_id: c4.8xlarge
+  - name: c3-8xl
+    driver_plugin: ec2
+    driver_config:
+      flavor_id: c3.8xlarge
+  - name: c4-4xl
+    driver_plugin: ec2
+    driver_config:
+      ebs_optimized: true
+      flavor_id: c4.4xlarge
+  - name: c3-4xl
+    driver_plugin: ec2
+    driver_config:
+      flavor_id: c3.4xlarge
 
 suites:
   - name: default
@@ -88,50 +104,7 @@ suites:
       - recipe[opsworks-passenger::deploy]
     attributes:
       nginx:
-        worker_rlimit_nofile: 4096
         default_site:
           enable: true
         restart_on_deploy: true
 
-  - name: maintenance
-    run_list:
-      - recipe[opsworks_initial_setup]
-      - recipe[ssh_users]
-      - recipe[dependencies]
-      - recipe[opsworks-passenger::setup]
-      - recipe[opsworks-passenger::test-setup]
-      - recipe[opsworks-passenger::deploy]
-    attributes:
-      nginx:
-        default_site:
-          enable: true
-        serve_maintenance_page: true
-        restart_on_deploy: true
-
-  - name: multi_site_html_app
-    run_list:
-      - recipe[opsworks_initial_setup]
-      - recipe[ssh_users]
-      - recipe[dependencies]
-      - recipe[opsworks-passenger::setup]
-      - recipe[opsworks-passenger::test-setup]
-      - recipe[opsworks-passenger::deploy]
-    attributes:
-      nginx:
-        default_site:
-          enable: true
-        try_static_files: true
-        default_server: true
-        restart_on_deploy: true
-
-  - name: no_restart_on_deploy
-    run_list:
-      - recipe[opsworks_initial_setup]
-      - recipe[ssh_users]
-      - recipe[dependencies]
-      - recipe[opsworks-passenger::setup]
-      - recipe[opsworks-passenger::test-setup]
-      - recipe[opsworks-passenger::deploy]
-    attributes:
-      nginx:
-        restart_on_deploy: false

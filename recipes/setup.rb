@@ -2,6 +2,8 @@
 include_recipe "build-essential"
 package "curl-devel"
 package "zlib-devel"
+package "siege"
+package "sysstat"
 
 gem_package "passenger" do
   version node[:passenger][:version]
