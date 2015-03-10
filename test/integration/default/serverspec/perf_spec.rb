@@ -22,7 +22,7 @@ describe 'perf' do
     it { should be_listening }
   end
 
-  [32].each do |concurrency|
+  [72].each do |concurrency|
     siege(concurrency)
   end
 end
