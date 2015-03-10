@@ -1,16 +1,11 @@
 require 'spec_helper'
 
 def siege(concurrency)
-  describe command("siege -c #{concurrency} -t 10M localhost &> /home/ec2-user/siege_#{concurrency}c100r.log") do
-    its(:exit_status) do
-      should eq 0
-      puts `\nvmstat -w`
-      puts `\nmpstat`
-      puts `\nnumastat`
-      # puts `grep -A 12 "Transactions:" /home/ec2-user/siege_#{concurrency}c100r.log`
-      puts `\ncat /home/ec2-user/siege.log`
-    end
-  end
+    puts `siege -b -c #{concurrency} -t 10M localhost`
+    puts `\nvmstat -w`
+    puts `\nmpstat`
+    puts `\nnumastat`
+    puts `\ncat /home/ec2-user/siege.log`
 end
 
 describe 'perf' do
