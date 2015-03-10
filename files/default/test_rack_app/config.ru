@@ -2,7 +2,7 @@ def taco
   a = []
   100.times do |i|
     a[i] = []
-    10000.downto(1) do |j|
+    1000.downto(1) do |j|
       a[i][j] = Math.sqrt(j) * i / 0.2
     end
   end
