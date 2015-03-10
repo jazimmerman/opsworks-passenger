@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 def siege(concurrency)
-  describe command("siege -c #{concurrency} -r 100 localhost &> /home/ec2-user/siege_#{concurrency}c100r.log") do
+  describe command("siege -c #{concurrency} -t 10M localhost &> /home/ec2-user/siege_#{concurrency}c100r.log") do
     its(:exit_status) do
       should eq 0
       puts `\nvmstat -w`
@@ -22,7 +22,7 @@ describe 'perf' do
     it { should be_listening }
   end
 
-  [275,300].each do |concurrency|
+  [32].each do |concurrency|
     siege(concurrency)
   end
 end
