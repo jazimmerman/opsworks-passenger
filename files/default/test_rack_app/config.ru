@@ -6,7 +6,7 @@ def taco
       a[i][j] = Math.sqrt(j) * i / 0.2
     end
   end
-  a
+  return 'tacos'
 end
 
 app = proc do |env|
